@@ -7,7 +7,7 @@ type BotInitRequest = {
 };
 
 const MINDSTUDIO_SIGNED_URL_ENDPOINT =
-  'https://v1.mindstudio-api.com/developer/v2/generate-signed-access-url';
+  'https://api.mindstudio.ai/developer/v2/generate-signed-access-url';
 
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as BotInitRequest | null;
