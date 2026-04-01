@@ -147,18 +147,6 @@ h2 {
   margin-bottom: 20px;
 }
 
-.embed-url {
-  max-width: 280px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: #f3f7f6;
-  color: var(--muted);
-  font-size: 0.8rem;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-}
-
 .embed-loading,
 .embed-fallback {
   display: grid;
@@ -169,16 +157,6 @@ h2 {
   border: 1px dashed rgba(15, 118, 110, 0.3);
   background: rgba(255, 255, 255, 0.72);
   text-align: center;
-}
-
-.loading-spinner {
-  width: 42px;
-  height: 42px;
-  margin-bottom: 16px;
-  border: 3px solid rgba(15, 118, 110, 0.15);
-  border-top-color: var(--accent);
-  border-radius: 999px;
-  animation: spin 0.9s linear infinite;
 }
 
 .embed-frame-shell {
@@ -222,12 +200,6 @@ h2 {
   transform: translateY(-1px);
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @media (max-width: 640px) {
   .hero-card {
     padding: 24px;
@@ -240,10 +212,6 @@ h2 {
 
   .embed-header {
     flex-direction: column;
-  }
-
-  .embed-url {
-    max-width: 100%;
   }
 
   .embed-loading,

@@ -5,12 +5,6 @@ import { useEffect, useState } from 'react';
 type BotInitResponse = {
   success: true;
   signed_url: string;
-  launch_variables: {
-    cycle_id: string;
-    job_title: string;
-    company_name: string;
-    apply_url: string;
-  };
 };
 
 type ApplyClientProps = {
@@ -28,6 +22,16 @@ export default function ApplyClient({ initialCycleId }: ApplyClientProps) {
     async function initBot() {
       setIsLoading(true);
       setError(null);
+      setBotData(null);
+
+      if (!initialCycleId) {
+        if (isActive) {
+          setError('Missing cycle_id in the URL.');
+          setIsLoading(false);
+        }
+
+        return;
+      }
 
       try {
         const response = await fetch('/api/bot/init', {
@@ -41,7 +45,9 @@ export default function ApplyClient({ initialCycleId }: ApplyClientProps) {
         });
 
         if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
+          const errorPayload = (await response.json().catch(() => null)) as { error?: string } | null;
+
+          throw new Error(errorPayload?.error ?? `Request failed with status ${response.status}`);
         }
 
         const data = (await response.json()) as BotInitResponse;
@@ -54,7 +60,7 @@ export default function ApplyClient({ initialCycleId }: ApplyClientProps) {
           setError(
             requestError instanceof Error
               ? requestError.message
-              : 'Unable to initialize the mock bot session.',
+              : 'Unable to initialize the applicant assistant.',
           );
           setBotData(null);
         }
@@ -93,21 +99,17 @@ export default function ApplyClient({ initialCycleId }: ApplyClientProps) {
               <p className="placeholder-label">Bot Embed</p>
               <h2>Applicant assistant panel</h2>
             </div>
-            {botData?.signed_url ? (
-              <code className="embed-url">{botData.signed_url}</code>
-            ) : null}
           </div>
 
           {isLoading ? (
             <div className="embed-loading" aria-live="polite">
-              <div className="loading-spinner" aria-hidden="true" />
-              <p>Initializing the assistant...</p>
+              <p>Loading applicant assistant...</p>
             </div>
           ) : null}
 
           {!isLoading && error ? (
             <div className="embed-fallback">
-              <p className="error-text">Mock bot init failed: {error}</p>
+              <p className="error-text">Applicant assistant failed to load: {error}</p>
             </div>
           ) : null}
 
