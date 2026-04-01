@@ -77,47 +77,50 @@ export default function ApplyClient({ initialCycleId }: ApplyClientProps) {
       <section className="hero-card">
         <span className="eyebrow">HireScore</span>
         <h1>HireScore Applicant Assistant</h1>
+        <p className="supporting-text">
+          Your assistant session is prepared on page load and embedded below once the signed bot
+          URL is available.
+        </p>
 
-        <div className="debug-grid">
-          <div className="debug-row">
-            <span className="debug-label">cycle_id</span>
-            <code className="debug-value">{initialCycleId || 'not provided'}</code>
-          </div>
-
-          <div className="debug-row">
-            <span className="debug-label">signed_url</span>
-            <code className="debug-value">
-              {botData?.signed_url ?? (isLoading ? 'Loading mock bot init...' : 'Unavailable')}
-            </code>
-          </div>
+        <div className="debug-inline">
+          <span className="debug-label">cycle_id</span>
+          <code className="debug-value">{initialCycleId || 'not provided'}</code>
         </div>
 
-        <div className="placeholder-card">
-          <p className="placeholder-label">Debug Payload</p>
-          <h2>MindStudio bot will live here</h2>
-          <p className="supporting-text">
-            The wrapper is initializing against a mock endpoint for now so the Vercel deploy can
-            be demoed without external dependencies.
-          </p>
-
-          <div className="debug-panel">
-            <p className="json-label">launch_variables</p>
-            <pre className="json-block">
-              {JSON.stringify(
-                botData?.launch_variables ?? {
-                  cycle_id: initialCycleId,
-                  job_title: '',
-                  company_name: '',
-                  apply_url: '',
-                },
-                null,
-                2,
-              )}
-            </pre>
+        <section className="embed-card">
+          <div className="embed-header">
+            <div>
+              <p className="placeholder-label">Bot Embed</p>
+              <h2>Applicant assistant panel</h2>
+            </div>
+            {botData?.signed_url ? (
+              <code className="embed-url">{botData.signed_url}</code>
+            ) : null}
           </div>
 
-          {error ? <p className="error-text">Mock bot init failed: {error}</p> : null}
-        </div>
+          {isLoading ? (
+            <div className="embed-loading" aria-live="polite">
+              <div className="loading-spinner" aria-hidden="true" />
+              <p>Initializing the assistant...</p>
+            </div>
+          ) : null}
+
+          {!isLoading && error ? (
+            <div className="embed-fallback">
+              <p className="error-text">Mock bot init failed: {error}</p>
+            </div>
+          ) : null}
+
+          {!isLoading && !error && botData?.signed_url ? (
+            <div className="embed-frame-shell">
+              <iframe
+                className="bot-iframe"
+                title="HireScore Applicant Assistant Bot Embed"
+                src={botData.signed_url}
+              />
+            </div>
+          ) : null}
+        </section>
       </section>
     </main>
   );
