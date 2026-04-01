@@ -26,13 +26,19 @@ export async function POST(request: Request) {
   const apiKey = process.env.MINDSTUDIO_API_KEY;
   const agentId = process.env.MINDSTUDIO_AGENT_ID;
 
-  if (!apiKey || !agentId) {
-    console.error('MindStudio environment variables are not configured.');
-
+  if (!apiKey) {
     return NextResponse.json(
       {
-        success: false,
-        error: 'Unable to initialize the applicant assistant.',
+        error: 'Missing API key',
+      },
+      { status: 500 },
+    );
+  }
+
+  if (!agentId) {
+    return NextResponse.json(
+      {
+        error: 'Missing agent ID',
       },
       { status: 500 },
     );
@@ -64,8 +70,9 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         {
-          success: false,
-          error: 'Unable to initialize the applicant assistant.',
+          error: 'MindStudio request failed',
+          status: mindStudioResponse.status,
+          response: responseText,
         },
         { status: 500 },
       );
@@ -80,8 +87,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        success: false,
-        error: 'Unable to initialize the applicant assistant.',
+        error: error instanceof Error ? error.message : 'Unexpected MindStudio init error',
       },
       { status: 500 },
     );
